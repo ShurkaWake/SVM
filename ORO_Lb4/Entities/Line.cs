@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ORO_Lb4.Models
+namespace ORO_Lb4.Entities
 {
     public record Line
     {

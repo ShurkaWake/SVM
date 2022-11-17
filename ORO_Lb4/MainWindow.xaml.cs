@@ -13,7 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using OxyPlot;
 using OxyPlot.Series;
-using ORO_Lb4.Models;
+using ORO_Lb4.Entities;
+using ORO_Lb4.DataAccess;
 
 namespace ORO_Lb4
 {
@@ -25,6 +26,8 @@ namespace ORO_Lb4
         public MainWindow()
         {
             InitializeComponent();
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             var mvm = new MainViewModel();
             GraphView.Model = mvm.MyModel;
         }
@@ -34,22 +37,23 @@ namespace ORO_Lb4
     {
         public MainViewModel()
         {
-            Line line = new Line(new Point(0, 2), new Point(-4, -2));
-            Func<double, double> lineFunc = x => line.A * x + line.C;
-            Line line1 = new Line(new Point(-6, -10), new Point(3, -6));
-            Func<double, double> lineFunc1 = x => line1.A * x + line1.C;
-            Line line2 = Line.GetMiddleLine(line, line1);
-            Func<double, double> lineFunc2 = x => line2.A * x + line2.C;
-
-            this.MyModel = new PlotModel { Title = "Example 1" };
-            this.MyModel.Series.Add(new FunctionSeries(lineFunc, -10, 10, 0.1, "line"));
-            this.MyModel.Series.Add(new FunctionSeries(lineFunc1, -10, 10, 0.1, "line1"));
-            this.MyModel.Series.Add(new FunctionSeries(lineFunc2, -10, 10, 0.1, "line2"));
+            this.MyModel = new PlotModel { Title = "Test" };
 
             var ars = new ScatterSeries();
-            ars.Points.Add(new ScatterPoint(1, 2, 1));
-            ars.Points.Add(new ScatterPoint(1, 4, 1));
-            ars.Points.Add(new ScatterPoint(3, 4, 1));
+            ExcelParser ep = new ExcelParser(
+                @"C:\Users\Sasha\Desktop\ОРО_Лр_4_Табл\40.xlsx",
+                0,
+                680,
+                0,
+                1,
+                0,
+                0
+                );
+            
+            foreach(var p in ep.Result)
+            {
+                ars.Points.Add(new ScatterPoint(p.X, p.Y, 2));
+            }
             this.MyModel.Series.Add(ars);
         }
 
