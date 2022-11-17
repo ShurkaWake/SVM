@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ORO_Lb4"
         xmlns:oxy="http://oxyplot.org/wpf"
-        xmlns:viewmodel="clr-namespace:ORO_Lb4.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="800" Background="#FF707070">
+    
     <Grid>
         <Grid Height="500" Width="500" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,0,0">
             <oxy:PlotView x:Name="GraphView" Background="#FFCBCBCB"/>
