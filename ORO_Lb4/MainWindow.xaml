@@ -6,12 +6,30 @@
         xmlns:local="clr-namespace:ORO_Lb4"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="800" Background="#FF707070">
-    
+        Title="MainWindow" Height="650" Width="882" Background="#FF707070">
+
     <Grid>
         <Grid Height="500" Width="500" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,0,0">
             <oxy:PlotView x:Name="GraphView" Background="#FFCBCBCB"/>
         </Grid>
+        <Grid x:Name="SettingsGrid" Visibility="Hidden">
+            <Label Content="2 Класи" HorizontalAlignment="Left" Margin="762,122,0,0" VerticalAlignment="Top" Foreground="White" Height="32" Width="65" FontSize="16"/>
+            <Label Content="1 Класс" HorizontalAlignment="Left" Margin="600,122,0,0" VerticalAlignment="Top" Foreground="White" Height="32" Width="65" FontSize="16"/>
+            <Slider x:Name="Slider" HorizontalAlignment="Left" Margin="685,129,0,0" VerticalAlignment="Top" Width="60" Maximum="1" SmallChange="1" ValueChanged="Slider_ValueChanged"/>
+            <TextBox x:Name="FirstRowStartBox" HorizontalAlignment="Left" Margin="605,206,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="55" InputScope="Number" Height="24" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+            <TextBox x:Name="FirstColumnStartBox" HorizontalAlignment="Left" Margin="605,167,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="55" InputScope="Number" Height="24" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+            <TextBox x:Name="FirstlemensNumber" HorizontalAlignment="Left" Margin="605,249,0,0" TextWrapping="Wrap" Text="680" VerticalAlignment="Top" Width="55" InputScope="Number" Height="24" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+            <Grid x:Name="TwoClassesGrid" Visibility="Hidden">
+                <TextBox x:Name="SecondRowStartBox" HorizontalAlignment="Left" Margin="767,204,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="55" InputScope="Number" Height="24" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                <TextBox x:Name="SecondColumnStartBox" HorizontalAlignment="Left" Margin="767,165,0,0" TextWrapping="Wrap" Text="4" VerticalAlignment="Top" Width="55" InputScope="Number" Height="24" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                <TextBox x:Name="SecondElemensNumber" HorizontalAlignment="Left" Margin="767,247,0,0" TextWrapping="Wrap" Text="680" VerticalAlignment="Top" Width="55" InputScope="Number" Height="24" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+            </Grid>
+            <Label Content="Колонка" HorizontalAlignment="Left" Margin="675,161,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
+            <Label Content="Рядок" HorizontalAlignment="Left" Margin="684,200,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
+            <Label Content="Кількість" HorizontalAlignment="Left" Margin="674,243,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
+            <Button x:Name="ProcessButton" Content="Опрацювати" HorizontalAlignment="Left" Margin="635,0,0,0" VerticalAlignment="Center" Width="160" Height="37" FontSize="22" Background="#FF72EEFD" Click="Button_Click"/>
+        </Grid>
+        <Button Content="Завантажити" HorizontalAlignment="Left" Margin="600,50,0,0" VerticalAlignment="Top" Width="228" Height="50" FontSize="22" Background="#FF72EEFD" Click="Button_Click"/>
 
     </Grid>
 </Window>

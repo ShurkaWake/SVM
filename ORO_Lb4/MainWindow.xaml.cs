@@ -23,6 +23,7 @@ namespace ORO_Lb4
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string source;
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +31,31 @@ namespace ORO_Lb4
 
             var mvm = new MainViewModel();
             GraphView.Model = mvm.MyModel;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new Microsoft.Win32.OpenFileDialog();
+            fileDialog.Filter = "Excel spreadsheet (*.xlsx)|*.xlsx";
+
+            var result = fileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                SettingsGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (Slider.Value == 1)
+            {
+                TwoClassesGrid.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TwoClassesGrid.Visibility = Visibility.Hidden;
+            }
         }
     }
 
