@@ -20,7 +20,7 @@ namespace ORO_Lb4.Entities
             _c = -(second.X * (second.Y - first.Y)) / (second.X - first.X) + second.Y;
         }
 
-        private Line(double a, double b, double c)
+        public Line(double a, double b, double c)
         {
             _a = a;
             _b = b;
@@ -37,6 +37,12 @@ namespace ORO_Lb4.Entities
             double b = 1;
             double c = (first.C + second.C) / 2.0;
             return new Line(a, b, c);
+        }
+
+        public double GetDistance(Point p)
+        {
+            return Math.Abs(A * p.X + B * p.Y + C)
+                         / Math.Sqrt(A * A + B * B); 
         }
     }
 }
