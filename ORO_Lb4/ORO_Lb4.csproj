@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
   </ItemGroup>
 

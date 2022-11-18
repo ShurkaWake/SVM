@@ -20,7 +20,7 @@ namespace ORO_Lb4.Entities
             _c = -(second.X * (second.Y - first.Y)) / (second.X - first.X) + second.Y;
         }
 
-        private Line(double a, double b, double c)
+        public Line(double a, double b, double c)
         {
             _a = a;
             _b = b;

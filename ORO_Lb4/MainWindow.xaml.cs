@@ -80,7 +80,12 @@ namespace ORO_Lb4
             {
                 ars.Points.Add(new ScatterPoint(p.X, p.Y, 2));
             }
+            ObjectClass oc = new ObjectClass(ep.Result);
+            Func<double, double> f = new Func<double, double>(x => oc.HyperSquare.A * x + oc.HyperSquare.C);
+            var fSeries = new FunctionSeries(f, oc.MinX, oc.MaxX, 0.001, "Test");
+
             this.MyModel.Series.Add(ars);
+            this.MyModel.Series.Add(fSeries);
         }
 
         public PlotModel MyModel { get; private set; }
