@@ -12,7 +12,7 @@ namespace ORO_Lb4.Entities
     internal record ObjectClass
     {
         Point[] _objects;
-        Line _hyperSquare;
+        Line _hyperPlane;
         double _minX = double.MaxValue;
         double _maxX = double.MinValue;
 
@@ -32,12 +32,12 @@ namespace ORO_Lb4.Entities
                 }
             }
 
-            FillHyperSquare();
+            FillHyperPlane();
         }
 
-        public Line HyperSquare
+        public Line HyperPlane
         {
-            get => _hyperSquare;
+            get => _hyperPlane;
         }
 
         public double MinX
@@ -50,36 +50,7 @@ namespace ORO_Lb4.Entities
             get => _maxX;
         }
 
-       /* private void FillHyperSquare()
-        {
-            Matrix<double> A = DenseMatrix.OfArray(new double[,]
-            {
-                { 0, 0 },
-                { 0, 0 }
-            });
-
-            Matrix<double> B = DenseMatrix.OfArray(new double[,]
-            {
-                { 0 },
-                { 0 },
-            });
-
-            foreach(var obj in _objects)
-            {
-                A[0, 0] = Math.Pow(obj.X, 2);
-                A[0, 1] += obj.X;
-                A[1, 0] += obj.X;
-
-                B[0, 0] += obj.X * obj.Y;
-                B[1, 0] += obj.Y;
-            }
-            A[1, 1] = _objects.Length;
-
-            var res = A.Inverse() * B;
-            _hyperSquare = new Line(res[0, 0], 1, res[1, 0]);
-        }*/
-
-        private void FillHyperSquare()
+        private void FillHyperPlane()
         {
             double sumXY = 0;
             double sumX = 0;
@@ -104,7 +75,75 @@ namespace ORO_Lb4.Entities
             }
             double c = cSum / _objects.Length;
 
-            _hyperSquare = new Line(a, 1, c);
+            _hyperPlane = new Line(a, 1, c);
+        }
+
+        public static Line Get2ClassesHyperPlaneAsAvg(ObjectClass a, ObjectClass b)
+        {
+            return Line.GetMiddleLine(a.HyperPlane, b.HyperPlane);
+        }
+
+        public static Line Get2ClassesHyperPlaneAsSVM(ObjectClass a, ObjectClass b)
+        {
+            double minD = double.MaxValue;
+            Point aPoint = new Point();
+            Point bPoint = new Point();
+
+            for(int i = 0; i < a._objects.Length; i++)
+            {
+                for(int j = 0; j < b._objects.Length; j++)
+                {
+                    if (GetDistance(a._objects[i], b._objects[j]) < minD)
+                    {
+                        aPoint= a._objects[i];
+                        bPoint= b._objects[j];
+                        minD= GetDistance(aPoint, bPoint);
+                    }
+                }
+            }
+
+            return FindSVM(aPoint, bPoint);
+        }
+
+        private static Line FindSVM(Point a, Point b) 
+        {
+            const int OneDimensionPositions = 100;
+            double Kr = double.MaxValue;
+            Line optimal = new Line(a, b);
+
+            Point min = new Point(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y));
+            Point max = new Point(Math.Max(a.X, b.X), Math.Max(a.Y, b.Y));
+
+            double step_X = (max.X - min.X) / OneDimensionPositions;
+            double step_Y = (max.Y - min.Y) / OneDimensionPositions;
+
+            for(double i = min.X; i < max.X; i += step_X) 
+            {
+                for(double j = min.Y; j < max.Y; j += step_Y)
+                {
+                    for(double k = min.X; k < max.X; k += step_X)
+                    {
+                        for(double m = min.Y; m < max.Y; m += step_Y)
+                        {
+                            Line temp = new Line(new Point(i, j), new Point(k, m));
+                            double Kr_temp = Math.Abs(temp.GetDistance(a) - temp.GetDistance(b));
+
+                            if (Kr_temp < Kr)
+                            {
+                                optimal = temp;
+                                Kr = Kr_temp;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return optimal;
+        }
+
+        private static double GetDistance(Point a, Point b)
+        {
+            return Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
         }
     }
 }

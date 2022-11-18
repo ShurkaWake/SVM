@@ -38,5 +38,11 @@ namespace ORO_Lb4.Entities
             double c = (first.C + second.C) / 2.0;
             return new Line(a, b, c);
         }
+
+        public double GetDistance(Point p)
+        {
+            return Math.Abs(A * p.X + B * p.Y + C)
+                         / Math.Sqrt(A * A + B * B); 
+        }
     }
 }
