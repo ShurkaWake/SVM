@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -102,17 +103,19 @@ namespace ORO_Lb4.Entities
                 }
             }
 
-            return FindSVM(aPoint, bPoint);
+            return FindSVM(aPoint, bPoint, a, b);
         }
 
-        private static Line FindSVM(Point a, Point b) 
+        private static Line FindSVM(Point a, Point b, ObjectClass first, ObjectClass second) 
         {
-            const int OneDimensionPositions = 100;
+            const int OneDimensionPositions = 10;
             double Kr = double.MaxValue;
             Line optimal = new Line(a, b);
+            int pointsOutOpt = int.MaxValue;
 
             Point min = new Point(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y));
             Point max = new Point(Math.Max(a.X, b.X), Math.Max(a.Y, b.Y));
+            bool flag = a.Y > b.Y;
 
             double step_X = (max.X - min.X) / OneDimensionPositions;
             double step_Y = (max.Y - min.Y) / OneDimensionPositions;
@@ -123,12 +126,26 @@ namespace ORO_Lb4.Entities
                 {
                     for(double k = min.X; k < max.X; k += step_X)
                     {
-                        for(double m = min.Y; m < max.Y; m += step_Y)
+                        if (i == k)
+                        {
+                            continue;
+                        }
+
+                        for (double m = min.Y; m < max.Y; m += step_Y)
                         {
                             Line temp = new Line(new Point(i, j), new Point(k, m));
-                            double Kr_temp = Math.Abs(temp.GetDistance(a) - temp.GetDistance(b));
+                            (double aDist, int aOut) = GetDistanceFromLineToObjectClass(temp, first, flag);
+                            (double bDist, int bOut) = GetDistanceFromLineToObjectClass(temp, second, !flag);
 
-                            if (Kr_temp < Kr)
+                            double Kr_temp = Math.Abs(aDist - bDist);
+
+                            if (aOut + bOut < pointsOutOpt)
+                            {
+                                pointsOutOpt = aOut + bOut;
+                                optimal = temp;
+                                Kr = Kr_temp;
+                            }
+                            else if (aOut + bOut == pointsOutOpt && Kr_temp < Kr)
                             {
                                 optimal = temp;
                                 Kr = Kr_temp;
@@ -143,7 +160,25 @@ namespace ORO_Lb4.Entities
 
         private static double GetDistance(Point a, Point b)
         {
-            return Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
+            return Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y- b.Y, 2));
         }
+
+        private static (double, int) GetDistanceFromLineToObjectClass(Line a, ObjectClass b, bool flag)
+        {
+            double res = 0;
+            int pointsOut = 0;
+
+            foreach (var p in b._objects)
+            {
+                var d = a.GetVectDistance(p, flag);
+                res += Math.Abs(d);
+                if(d < 0)
+                {
+                    pointsOut++;
+                }
+            }
+            return (res, pointsOut);
+        }
+
     }
 }

@@ -93,6 +93,7 @@ namespace ORO_Lb4
         public MainViewModel(string path, int column, int row, int number)
         {
             MyModel = new PlotModel { Title = "Один клас" };
+            MyModel.PlotType = PlotType.Cartesian;
             ExcelParser ep = new ExcelParser(
                 path,
                 0,
@@ -135,6 +136,7 @@ namespace ORO_Lb4
             )
         {
             MyModel = new PlotModel { Title = "Два класи" };
+            MyModel.PlotType = PlotType.Cartesian;
             ExcelParser epFirst = new ExcelParser(
                 path,
                 0,
@@ -193,8 +195,9 @@ namespace ORO_Lb4
             MyModel?.Series.Add(pointsSecond);
             MyModel?.Series.Add(hyperPlaneSecond);
 
+            Line hyper = ObjectClass.Get2ClassesHyperPlaneAsSVM(ocFirst, ocSecond);
             FunctionSeries hyperplane = new FunctionSeries(
-                GetFunc(ObjectClass.Get2ClassesHyperPlaneAsSVM(ocFirst, ocSecond)),
+                GetFunc(hyper),
                 Math.Min(ocFirst.MinX, ocSecond.MinX),
                 Math.Max(ocFirst.MaxX, ocSecond.MaxX),
                 dx,
@@ -205,7 +208,7 @@ namespace ORO_Lb4
 
         private Func<double, double> GetFunc(Line l)
         {
-            return new Func<double, double>(x => l.A * x + l.C);
+            return new Func<double, double>(x => (l.A / l.B) * x + l.C / l.B);
         }
 
         public PlotModel MyModel { get; private set; }

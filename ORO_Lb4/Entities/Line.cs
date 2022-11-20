@@ -15,9 +15,19 @@ namespace ORO_Lb4.Entities
 
         public Line(Point first, Point second)
         {
-            _b = 1;
-            _a = (second.Y - first.Y) / (second.X - first.X);
-            _c = -(second.X * (second.Y - first.Y)) / (second.X - first.X) + second.Y;
+            if (first.Y == second.Y)
+            {
+                _a = 0;
+                _b = 1;
+                _c = first.Y;
+            }
+            else
+            {
+                _b = 1;
+                _a = (second.Y - first.Y) / (second.X - first.X);
+                _c = -(second.X * (second.Y - first.Y)) / (second.X - first.X) + second.Y;
+            }
+            
         }
 
         public Line(double a, double b, double c)
@@ -33,10 +43,36 @@ namespace ORO_Lb4.Entities
 
         public static Line GetMiddleLine(Line first, Line second)
         {
-            double a = Math.Tan((Math.Atan(first.A) + Math.Atan(second.A)) / 2.0);
-            double b = 1;
+            double a = (first.A + second.A) / 2.0;
+            double b = (first.B + second.B) / 2.0;
             double c = (first.C + second.C) / 2.0;
             return new Line(a, b, c);
+        }
+
+        public double GetVectDistance(Point p, bool flag)
+        {
+            if (flag)
+            {
+                if (p.Y > (A / B) * p.X + (C / B))
+                {
+                    return GetDistance(p);
+                }
+                else
+                {
+                    return -GetDistance(p);
+                }
+            }
+            else
+            {
+                if (p.Y > (A / B) * p.X + (C / B))
+                {
+                    return -GetDistance(p);
+                }
+                else
+                {
+                    return +GetDistance(p);
+                }
+            }
         }
 
         public double GetDistance(Point p)
