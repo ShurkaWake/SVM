@@ -27,7 +27,7 @@
             <Label Content="Колонка" HorizontalAlignment="Left" Margin="675,161,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
             <Label Content="Рядок" HorizontalAlignment="Left" Margin="684,200,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
             <Label Content="Кількість" HorizontalAlignment="Left" Margin="674,243,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
-            <Button x:Name="ProcessButton" Content="Опрацювати" HorizontalAlignment="Left" Margin="635,0,0,0" VerticalAlignment="Center" Width="160" Height="37" FontSize="22" Background="#FF72EEFD" Click="Button_Click"/>
+            <Button x:Name="ProcessButton" Content="Опрацювати" HorizontalAlignment="Left" Margin="635,0,0,0" VerticalAlignment="Center" Width="160" Height="37" FontSize="22" Background="#FF72EEFD" Click="ProcessButton_Click"/>
         </Grid>
         <Button Content="Завантажити" HorizontalAlignment="Left" Margin="600,50,0,0" VerticalAlignment="Top" Width="228" Height="50" FontSize="22" Background="#FF72EEFD" Click="Button_Click"/>
 
