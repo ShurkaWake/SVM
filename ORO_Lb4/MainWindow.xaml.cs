@@ -28,9 +28,6 @@ namespace ORO_Lb4
         {
             InitializeComponent();
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
-            var mvm = new MainViewModel();
-            GraphView.Model = mvm.MyModel;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -43,6 +40,7 @@ namespace ORO_Lb4
             if (result == true)
             {
                 SettingsGrid.Visibility = Visibility.Visible;
+                source = fileDialog.FileName;
             }
         }
 
@@ -57,68 +55,157 @@ namespace ORO_Lb4
                 TwoClassesGrid.Visibility = Visibility.Hidden;
             }
         }
+
+        private void ProcessButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Slider.Value == 1) 
+            {
+                var mw = new MainViewModel(
+                    source,
+                    int.Parse(FirstColumnStartBox.Text),
+                    int.Parse(FirstRowStartBox.Text),
+                    int.Parse(FirstlemensNumber.Text),
+                    int.Parse(SecondColumnStartBox.Text),
+                    int.Parse(SecondRowStartBox.Text),
+                    int.Parse(SecondElemensNumber.Text)
+                    );
+                GraphView.Model = mw.MyModel;
+            }
+            else
+            {
+                var mw = new MainViewModel(
+                    source,
+                    int.Parse(FirstColumnStartBox.Text),
+                    int.Parse(FirstRowStartBox.Text),
+                    int.Parse(FirstlemensNumber.Text)
+                    );
+
+                GraphView.Model = mw.MyModel;
+            }
+        }
     }
 
     public class MainViewModel
     {
-        public MainViewModel()
+        const double dx = 0.001;
+        const double pointSize = 2;
+
+        public MainViewModel(string path, int column, int row, int number)
         {
-            this.MyModel = new PlotModel { Title = "Test" };
-
-            var ars = new ScatterSeries();
+            MyModel = new PlotModel { Title = "Один клас" };
             ExcelParser ep = new ExcelParser(
-                @"C:\Users\Sasha\Desktop\ОРО_Лр_4_Табл\40.xlsx",
+                path,
                 0,
-                680,
-                0,
-                1,
-                0,
-                0
+                number,
+                column,
+                column + 1,
+                row,
+                row
                 );
-            foreach(var p in ep.Result)
-            {
-                ars.Points.Add(new ScatterPoint(p.X, p.Y, 2));
-            }
-
-            var ars1 = new ScatterSeries();
-            ExcelParser ep1 = new ExcelParser(
-                @"C:\Users\Sasha\Desktop\ОРО_Лр_4_Табл\40.xlsx",
-                0,
-                680,
-                4,
-                5,
-                0,
-                0
-                );
-
-            foreach (var p in ep1.Result)
-            {
-                ars1.Points.Add(new ScatterPoint(p.X, p.Y, 2));
-            }
 
             ObjectClass oc = new ObjectClass(ep.Result);
-            Func<double, double> f = new Func<double, double>(x => oc.HyperPlane.A * x + oc.HyperPlane.C);
-            ObjectClass oc1 = new ObjectClass(ep1.Result);
-            Func<double, double> f1 = new Func<double, double>(x => oc1.HyperPlane.A * x + oc1.HyperPlane.C);
+            ScatterSeries points = new ScatterSeries() { Title = "Клас" };
+            FunctionSeries hyperPlane = new FunctionSeries(
+                GetFunc(oc.HyperPlane),
+                oc.MinX,
+                oc.MaxX,
+                dx,
+                "Гіперплощина"
+                );
+                
 
-            var fSeries = new FunctionSeries(f, oc.MinX, oc.MaxX, 0.001, "Test");
-            var fSeries1 = new FunctionSeries(f1, oc1.MinX, oc1.MaxX, 0.001, "Test1");
+            foreach (var point in ep.Result)
+            {
+                points.Points.Add(new ScatterPoint(point.X, point.Y, pointSize));
+            }
 
-            this.MyModel.Series.Add(ars);
-            this.MyModel.Series.Add(ars1);
-            this.MyModel.Series.Add(fSeries);
-            this.MyModel.Series.Add(fSeries1);
+            MyModel?.Series.Add(points);
 
-            var hp = ObjectClass.Get2ClassesHyperPlaneAsSVM(oc, oc1);
-            Func<double, double> f2 = new Func<double, double>(x => hp.A * x + hp.C);
-            var fSeries2 = new FunctionSeries(f2, oc.MinX, oc1.MaxX, 0.001, "SVM");
-            MyModel.Series.Add(fSeries2);
+            MyModel?.Series.Add(hyperPlane);
+        }
 
-            /*var hp1 = ObjectClass.Get2ClassesHyperPlaneAsAvg(oc, oc1);
-            Func<double, double> f3 = new Func<double, double>(x => hp1.A * x + hp1.C);
-            var fSeries3 = new FunctionSeries(f3, oc.MinX, oc1.MaxX, 0.001, "Avg");
-            MyModel.Series.Add(fSeries3);*/
-            MyModel.PlotType = PlotType.Cartesian;
+        public MainViewModel(
+            string path, 
+            int columnFirst, 
+            int rowFirst, 
+            int numberFirst,
+            int columnSecond,
+            int rowSecond,
+            int numberSecond
+            )
+        {
+            MyModel = new PlotModel { Title = "Два класи" };
+            ExcelParser epFirst = new ExcelParser(
+                path,
+                0,
+                numberFirst,
+                columnFirst,
+                columnFirst + 1,
+                rowFirst,
+                rowFirst
+                );
+
+            ObjectClass ocFirst = new ObjectClass(epFirst.Result);
+            ScatterSeries pointsFirst = new ScatterSeries() { Title = "Клас 1" };
+            FunctionSeries hyperPlaneFirst = new FunctionSeries(
+                GetFunc(ocFirst.HyperPlane),
+                ocFirst.MinX,
+                ocFirst.MaxX,
+                dx,
+                "Гіперплощина класу 1"
+                );
+
+
+            foreach (var point in epFirst.Result)
+            {
+                pointsFirst.Points.Add(new ScatterPoint(point.X, point.Y, pointSize));
+            }
+
+            MyModel?.Series.Add(pointsFirst);
+            MyModel?.Series.Add(hyperPlaneFirst);
+
+            ExcelParser epSecond = new ExcelParser(
+                path,
+                0,
+                numberSecond,
+                columnSecond,
+                columnSecond + 1,
+                rowSecond,
+                rowSecond
+                );
+
+            ObjectClass ocSecond = new ObjectClass(epSecond.Result);
+            ScatterSeries pointsSecond = new ScatterSeries() { Title = "Клас 2" };
+            FunctionSeries hyperPlaneSecond = new FunctionSeries(
+                GetFunc(ocSecond.HyperPlane),
+                ocSecond.MinX,
+                ocSecond.MaxX,
+                dx,
+                "Гіперплощина класу 2"
+                );
+
+
+            foreach (var point in epSecond.Result)
+            {
+                pointsSecond.Points.Add(new ScatterPoint(point.X, point.Y, pointSize));
+            }
+
+            MyModel?.Series.Add(pointsSecond);
+            MyModel?.Series.Add(hyperPlaneSecond);
+
+            FunctionSeries hyperplane = new FunctionSeries(
+                GetFunc(ObjectClass.Get2ClassesHyperPlaneAsSVM(ocFirst, ocSecond)),
+                Math.Min(ocFirst.MinX, ocSecond.MinX),
+                Math.Max(ocFirst.MaxX, ocSecond.MaxX),
+                dx,
+                "Гіперплощина між класами"
+                );
+            MyModel?.Series.Add(hyperplane);
+        }
+
+        private Func<double, double> GetFunc(Line l)
+        {
+            return new Func<double, double>(x => l.A * x + l.C);
         }
 
         public PlotModel MyModel { get; private set; }
