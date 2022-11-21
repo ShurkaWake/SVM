@@ -24,6 +24,7 @@ namespace ORO_Lb4
     public partial class MainWindow : Window
     {
         private string source;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -208,7 +209,7 @@ namespace ORO_Lb4
 
         private Func<double, double> GetFunc(Line l)
         {
-            return new Func<double, double>(x => (l.A / l.B) * x + l.C / l.B);
+            return new Func<double, double>(x => (l.A / -l.B) * x + l.C / -l.B);
         }
 
         public PlotModel MyModel { get; private set; }
