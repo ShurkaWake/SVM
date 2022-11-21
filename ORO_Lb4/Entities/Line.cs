@@ -18,14 +18,14 @@ namespace ORO_Lb4.Entities
             if (first.Y == second.Y)
             {
                 _a = 0;
-                _b = 1;
+                _b = -1;
                 _c = first.Y;
             }
             else
             {
-                _b = 1;
+                _b = -1;
                 _a = (second.Y - first.Y) / (second.X - first.X);
-                _c = -(second.X * (second.Y - first.Y)) / (second.X - first.X) + second.Y;
+                _c = second.Y - (second.X * (second.Y - first.Y)) / (second.X - first.X);
             }
             
         }
@@ -53,7 +53,7 @@ namespace ORO_Lb4.Entities
         {
             if (flag)
             {
-                if (p.Y > (A / B) * p.X + (C / B))
+                if (p.Y > (A / -B) * p.X + (C / -B))
                 {
                     return GetDistance(p);
                 }
@@ -64,7 +64,7 @@ namespace ORO_Lb4.Entities
             }
             else
             {
-                if (p.Y > (A / B) * p.X + (C / B))
+                if (p.Y > (A / -B) * p.X + (C / -B))
                 {
                     return -GetDistance(p);
                 }

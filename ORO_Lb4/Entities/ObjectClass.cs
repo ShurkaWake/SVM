@@ -76,7 +76,7 @@ namespace ORO_Lb4.Entities
             }
             double c = cSum / _objects.Length;
 
-            _hyperPlane = new Line(a, 1, c);
+            _hyperPlane = new Line(a, -1, c);
         }
 
         public static Line Get2ClassesHyperPlaneAsAvg(ObjectClass a, ObjectClass b)
@@ -137,7 +137,7 @@ namespace ORO_Lb4.Entities
                             (double aDist, int aOut) = GetDistanceFromLineToObjectClass(temp, first, flag);
                             (double bDist, int bOut) = GetDistanceFromLineToObjectClass(temp, second, !flag);
 
-                            double Kr_temp = Math.Abs(aDist - bDist);
+                            double Kr_temp = Math.Abs(aDist / first._objects.Length - bDist / second._objects.Length);
 
                             if (aOut + bOut < pointsOutOpt)
                             {
